@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "posts/2024-04-22-volume/index.html",
+    "href": "posts/2024-04-22-volume/index.html",
+    "title": "Analyzing gym data",
+    "section": "",
+    "text": "Code\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport datetime as dt\nimport matplotlib.dates as mdates"
+  },
+  {
+    "objectID": "posts/2024-04-22-volume/index.html#volume-and-max-rep-weight-per-exercise",
+    "href": "posts/2024-04-22-volume/index.html#volume-and-max-rep-weight-per-exercise",
+    "title": "Analyzing gym data",
+    "section": "Volume and max rep weight per exercise",
+    "text": "Volume and max rep weight per exercise\n\n\nCode\ndf = pd.read_csv(\"../../data/2024-04-22.csv\")\ndf['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d %I:%M:%S %p')\n# Count unique exercises per day\nexercise_counts = df.groupby(['Date', 'Exercise Name']).size().reset_index(name='count')['Exercise Name'].value_counts()\n#print(exercise_counts)\nn_plots = exercise_counts[exercise_counts &gt; 40].count()\n\nfig, axs = plt.subplots(n_plots, figsize=(10,3*n_plots), dpi=600, sharex=True)\n\ndf[\"Volume\"] = df[\"Weight\"] * df[\"Reps\"]\nmax_rep_weight = df.groupby(['Date', 'Exercise Name'])['Weight'].max().reset_index()\nmax_rep_weight.rename(columns={'Weight': 'Max Rep Weight'}, inplace=True)\n\n# Merge the max rep weight back into the original DataFrame\ndf = pd.merge(df, max_rep_weight, on=['Date', 'Exercise Name'])\n\ni=-1\nfor exercise, count in exercise_counts.items():\n    if count &gt; 40:\n        i+=1\n        sns.lineplot(x=df[df['Exercise Name'] == exercise]['Date'], y=df[df['Exercise Name'] == exercise]['Volume'], ax=axs[i], errorbar=None, markers=True, marker='o', alpha=0.5)\n        ax2 = axs[i].twinx()\n        sns.lineplot(x=df[df['Exercise Name'] == exercise]['Date'], y=df[df['Exercise Name'] == exercise]['Max Rep Weight'], ax=ax2, errorbar=None, markers=True, color='red', marker='o', alpha=0.5)\n\n        axs[i].set_title(f\"{exercise} Volume per day\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n#exercise_counts = exercise_counts.drop_duplicates(subset=['Date', 'Exercise Name'])\n#print(exercise_counts)\n#exercise_counts = exercise_counts.groupby('Exercise Name')['count'].sum()\n#\n#print(exercise_counts)\n#\n## Plot exercise counts\n#fig, ax = plt.subplots(figsize=(10, 5), dpi=600)\n#exercise_counts.plot(kind='bar', ax=ax)\n#ax.set_title(\"Number of Days Each Exercise Was Performed\")\n#ax.set_xlabel(\"Exercise\")\n#ax.set_ylabel(\"Number of Days\")\n#\n#plt.xticks(rotation=45)\n#ax.spines['top'].set_visible(False)\n#ax.spines['right'].set_visible(False)\n#\n#plt.tight_layout()\n#plt.show()"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": ".",
+    "section": "",
+    "text": "Analyzing gym data\n\n\n\n\n\n\n\n\n\n\n\nApr 19, 2024\n\n\nSimon Grimm\n\n\n\n\n\n\nNo matching items"
+  }
+]
