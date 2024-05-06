@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "posts/2024-04-22-volume/index.html",
+    "href": "posts/2024-04-22-volume/index.html",
+    "title": "Analyzing gym data",
+    "section": "",
+    "text": "Code\nimport pandas as pd\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport datetime as dt\nimport matplotlib.dates as mdates"
+  },
+  {
+    "objectID": "posts/2024-04-22-volume/index.html#frequency-per-week",
+    "href": "posts/2024-04-22-volume/index.html#frequency-per-week",
+    "title": "Analyzing gym data",
+    "section": "Frequency per week",
+    "text": "Frequency per week\n\n\nCode\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\ndata = pd.read_csv('../../data/2024-04-22.csv', parse_dates=['Date'])\ndata['Workout'] = data['Workout Name'] + ' (' + data['Duration'] + ')'\n\n# Group the data by week and count the unique workouts\nworkout_counts = data.groupby([pd.Grouper(key='Date', freq='W'), 'Workout']).size().reset_index(name='Workout Count')\nworkout_counts = workout_counts.groupby('Date')['Workout'].nunique().reset_index(name='Unique Workouts')\n\n# Set the style for the plot\nsns.set(style='darkgrid')\n\n# Create a line plot\nplt.figure(figsize=(12, 6))\nsns.lineplot(data=workout_counts, x='Date', y='Unique Workouts', marker='o')\n\n# Set the title and labels\nplt.title('Workout Frequency by Week', fontsize=16)\nplt.xlabel('Week', fontsize=12)\nplt.ylabel('Number of Unique Workouts', fontsize=12)\n\n# Rotate the x-axis labels for better readability\nplt.xticks(rotation=45)\n\n# Show the plot\nplt.show()"
+  },
+  {
+    "objectID": "posts/2024-04-22-volume/index.html#volume-and-max-rep-weight-per-exercise",
+    "href": "posts/2024-04-22-volume/index.html#volume-and-max-rep-weight-per-exercise",
+    "title": "Analyzing gym data",
+    "section": "Volume and max rep weight per exercise",
+    "text": "Volume and max rep weight per exercise\nThe first three exercises are\n\n\nCode\ndf = pd.read_csv(\"../../data/2024-04-22.csv\")\ndf['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d %I:%M:%S %p')\nexercise_counts = df.groupby(['Date', 'Exercise Name']).size().reset_index(name='count')['Exercise Name'].value_counts()\n#print(exercise_counts)\nn_plots = exercise_counts[exercise_counts &gt; 40].count()\n\n\nfig, axs = plt.subplots(n_plots, figsize=(10,3*n_plots), dpi=600, sharex=True)\n\ndf[\"Volume\"] = df[\"Weight\"] * df[\"Reps\"]\nmax_rep_weight = df.groupby(['Date', 'Exercise Name'])['Weight'].max().reset_index()\nmax_rep_weight.rename(columns={'Weight': 'Max Rep Weight'}, inplace=True)\n\n# Merge the max rep weight back into the original DataFrame\ndf = pd.merge(df, max_rep_weight, on=['Date', 'Exercise Name'])\ni=-1\n\nexcluded_exercises = [\"Chest Dip\", \"Bench Press (Barbell)\", \"Pull Up\", \"Deadlift\"]\nfor exercise, count in exercise_counts.items():\n    if exercise in excluded_exercises:\n        continue\n    if count &gt; 40:\n        i+=1\n        sns.lineplot(x=df[df['Exercise Name'] == exercise]['Date'], y=df[df['Exercise Name'] == exercise]['Volume'], ax=axs[i], errorbar=None, markers=True, marker='o', alpha=0.5)\n        ax2 = axs[i].twinx()\n        sns.lineplot(x=df[df['Exercise Name'] == exercise]['Date'], y=df[df['Exercise Name'] == exercise]['Max Rep Weight'], ax=ax2, errorbar=None, markers=True, color='red', marker='o', alpha=0.5)\n\n        axs[i].set_title(f\"{exercise}\")"
+  },
+  {
+    "objectID": "posts/2024-04-22-volume/index.html#volume-and-max-rep-weight-per-exercise-1",
+    "href": "posts/2024-04-22-volume/index.html#volume-and-max-rep-weight-per-exercise-1",
+    "title": "Analyzing gym data",
+    "section": "Volume and max rep weight per exercise",
+    "text": "Volume and max rep weight per exercise"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": ".",
+    "section": "",
+    "text": "Analyzing gym data\n\n\n\n\n\n\n\n\n\n\n\nApr 19, 2024\n\n\nSimon Grimm\n\n\n\n\n\n\nNo matching items"
+  }
+]
